@@ -1,0 +1,9 @@
+JID=$(sbatch --time 4:00:00 -n 6 -N 1 --gres=gpu:4 --mem=32G --wrap='sleep 4h' --parsable)
+while [ $(squeue -j $JID -h -o %t) != R ]; do sleep 10; done
+ssh -X $(squeue -j $JID -h -o %B)
+
+export BLENDER=/fslhome/kastnerd/blender/blender-2.82-linux64/blender
+export JOB=/fslhome/kastnerd/blender/jobs/current.blend
+export OUTPUT=/fslhome/kastnerd/blender/jobs/current
+
+$BLENDER -b $JOB -o $OUTPUT -E CYCLES -F PNG -f 1
